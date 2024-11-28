@@ -1,0 +1,128 @@
+create database OrderFoodDelivery;
+
+create table user (
+    id int primary key auto_increment,
+    username varchar(20) not null unique ,
+    password varchar(18) not null ,
+    email varchar(30) not null unique ,
+    phone_number varchar(15) not null unique ,
+    address varchar(40) not null ,
+    create_at TIMESTAMP default current_timestamp
+);
+
+
+create table restaurant (
+    id int primary key auto_increment,
+    name varchar(40) not null ,
+    location varchar(40) not null ,
+    phone_number varchar(15) not null unique ,
+    type_of_food varchar(25) not null ,
+    create_at TIMESTAMP default current_timestamp
+);
+
+create table driver (
+    id int primary key auto_increment,
+    name varchar(20) not null ,
+    phone_number varchar(15) not null unique,
+    veicle_type varchar(20) not null ,
+    create_at TIMESTAMP default current_timestamp
+);
+
+create table menuItems (
+    id int primary key auto_increment,
+    itemName varchar(30) not null,
+    description varchar(60) NOT NULL,
+    price int not null check (price > 0),
+    available boolean default true ,
+    restaurantId int not null,
+    created_at TIMESTAMP default CURRENT_TIMESTAMP,
+    foreign key (restaurantId) references restaurant(Id)
+);
+
+CREATE TABLE `Order` (
+    Id int primary key auto_increment,
+    menuItemId int not null,
+    userId int not null,
+    driverId int not null,
+    status varchar(15) not null check (status='waiting' or status='in kitchen' or status='in way' or status='delivered'),
+    totalPrice int check (totalPrice > 0),
+    totalAmount int check (totalAmount > 0),
+    order_date TIMESTAMP default CURRENT_TIMESTAMP,
+    foreign key (menuItemId) references menuItems(id),
+    foreign key (userId) references user(id),
+    foreign key (driverId) references driver(id)
+);
+
+insert into user (username, password, email, phone_number, address) values
+ ('abdullah123', 'abd123', 'abdullah@gmail.com', '966564798345', 'Riyadh,Olaya Street'),
+('noura456', 'nou789', 'noura@gmail.com', '966531234567', 'Jeddah,King Road'),
+('saleh44', 'sal453', 'saleh@gmail.com', '966544567890', 'Riyadh, Olaya Street'),
+('reem_q', 'reem202', 'reem.q@gmail.com', '966556789012', 'Mecca,Ajyad Street'),
+('ala123', 'al234al', 'ala12@gmail.com', '966567890123', 'Medina,Quba Road');
+
+select * from user;
+
+insert into restaurant (name, location, phone_number, type_of_food) values
+('Al Baik', 'Jeddah', '9665551765436', 'Fast Food'),
+('Aseeb', 'Riyadh', '966555688321', 'Traditional Saudi'),
+('eloge', 'Riyadh', '966555774321', 'French Food'),
+('Sekkah', 'Jeddah', '966553244487', 'Fast Food'),
+('AANI&DANI', 'Mecca', '966552198345', 'Desserts');
+
+select * from restaurant;
+
+insert into driver (name, phone_number, veicle_type) values
+('Fahad', '966555987654', 'Motorbike'),
+('Naser', '966555876543', 'Car'),
+('Yasir', '966555765432', 'Scooter'),
+('Ahmad', '966555654321', 'Car'),
+('Omar', '966555543210', 'Motorbike');
+
+select * from driver;
+
+insert into menuItems (itemName, description, price, restaurantId) values
+('Chicken Broast', 'Crispy fried chicken with fries and garlic sauce', 15, 1),
+('Shrimp Meal', 'Golden fried shrimp served with fries and sauces', 30, 1),
+('Lamb Kabsa', 'Traditional Saudi rice dish with spiced lamb', 50, 2),
+('Chicken Mandi', 'Smoky rice with tender spiced chicken', 40, 2),
+('Croissant', 'Buttery and flaky French pastry', 8, 3),
+('Cheeseburger', 'Juicy beef burger with cheese and special sauce', 25, 4),
+('Loaded Fries', 'Fries topped with cheese, beef, and sauces', 18, 4),
+('Choco Sweet', 'Rich melted chocolate with fruits for dipping', 35, 5),
+('Macarons', 'Colorful French cookies with a creamy filling', 20, 5);
+
+select * from menuItems;
+
+insert into `Order` (menuItemId, userId, driverId, status, totalPrice, totalAmount) values
+(1, 1, 1, 'waiting', 15, 20),
+(2, 2, 2, 'in kitchen', 50, 55),
+(3, 3, 3, 'in way', 20, 25),
+(4, 4, 4, 'delivered', 90, 95),
+(5, 5, 5, 'waiting', 25, 30);
+
+select * from `order`;
+
+update menuItems set price = 20
+where itemName = 'Chicken Broast';
+
+update restaurant set location = 'Dammam'
+where name = 'Sekkah';
+
+update `order`set status = 'in kitchen'
+where Id = 5;
+
+delete from menuItems
+WHERE itemName = 'Loaded Fries' AND restaurantId = 4;
+
+delete from `order`
+where Id = 1;
+
+alter table menuItems
+modify column description varchar(100) not null ;
+
+
+
+
+
+
+
